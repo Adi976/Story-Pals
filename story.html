@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StoryPals - Magical Friends for Young Storytellers</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #7b5ea7;
+        --secondary-color: #f0c3e9;
+        --accent-color: #ff9e6d;
+        --light-color: #f9f5ff;
+        --dark-color: #483c67;
+        --cloud-color: #ffffff;
+        --star-color: #ffe66d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow-x: hidden;
+        background: linear-gradient(to bottom, #b5a8e0, #d5a8f0);
+        color: var(--dark-color);
+      }
+
+      /* Animated background elements */
+      .bg-elements {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .cloud {
+        position: absolute;
+        background: var(--cloud-color);
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: float 30s infinite linear;
+      }
+
+      .cloud:before,
+      .cloud:after {
+        content: "";
+        position: absolute;
+        background: var(--cloud-color);
+        border-radius: 50%;
+      }
+
+      .cloud-1 {
+        width: 120px;
+        height: 60px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .cloud-1:before {
+        width: 70px;
+        height: 70px;
+        top: -30px;
+        left: 20px;
+      }
+
+      .cloud-1:after {
+        width: 60px;
+        height: 60px;
+        top: -20px;
+        left: 60px;
+      }
+
+      .cloud-2 {
+        width: 100px;
+        height: 50px;
+        top: 30%;
+        right: 15%;
+        animation-delay: -10s;
+      }
+
+      .cloud-2:before {
+        width: 60px;
+        height: 60px;
+        top: -25px;
+        left: 15px;
+      }
+
+      .cloud-2:after {
+        width: 50px;
+        height: 50px;
+        top: -15px;
+        left: 50px;
+      }
+
+      .cloud-3 {
+        width: 80px;
+        height: 40px;
+        bottom: 25%;
+        left: 20%;
+        animation-delay: -20s;
+      }
+
+      .cloud-3:before {
+        width: 50px;
+        height: 50px;
+        top: -20px;
+        left: 10px;
+      }
+
+      .cloud-3:after {
+        width: 40px;
+        height: 40px;
+        top: -15px;
+        left: 40px;
+      }
+
+      .star {
+        position: absolute;
+        background: var(--star-color);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        animation: twinkle 4s infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateX(-100px);
+        }
+        100% {
+          transform: translateX(calc(100vw + 100px));
+        }
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.2;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5);
+        }
+      }
+
+      /* Navigation */
+      .nav-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 15px 20px;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .logo img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo-text {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--primary-color);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: var(--dark-color);
+        font-weight: 500;
+        transition: color 0.3s;
+        font-size: 16px;
+        position: relative;
+      }
+
+      .nav-links a:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background-color: var(--accent-color);
+        transition: width 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .nav-links a:hover:after {
+        width: 100%;
+      }
+
+      .login-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 15px rgba(123, 94, 167, 0.3);
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(123, 94, 167, 0.4);
+      }
+
+      .mobile-menu {
+        display: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--primary-color);
+      }
+
+      /* Hero section */
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 80vh;
+        padding: 0 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        color: var(--light-color);
+        margin-bottom: 20px;
+        text-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+        color: var(--light-color);
+        max-width: 700px;
+        margin-bottom: 40px;
+        line-height: 1.6;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1.2s ease-out;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 20px;
+        animation: fadeInUp 1.4s ease-out;
+      }
+
+      .cta-btn {
+        padding: 15px 35px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+      }
+
+      .primary-btn {
+        background-color: var(--accent-color);
+        color: white;
+        box-shadow: 0 5px 20px rgba(255, 158, 109, 0.4);
+      }
+
+      .primary-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 158, 109, 0.5);
+      }
+
+      .secondary-btn {
+        background-color: transparent;
+        color: var(--light-color);
+        border: 2px solid var(--light-color);
+      }
+
+      .secondary-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+      }
+
+      /* Character section */
+      .characters {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: -80px;
+        margin-bottom: 60px;
+        flex-wrap: wrap;
+      }
+
+      .character {
+        width: 220px;
+        height: 260px;
+        background-color: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .character:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .character img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 5px solid var(--secondary-color);
+        transition: transform 0.3s;
+        background-color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .character:hover img {
+        transform: scale(1.1);
+      }
+
+      .character h3 {
+        color: var(--primary-color);
+        margin-bottom: 5px;
+        font-size: 1.3rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .character p {
+        color: var(--dark-color);
+        font-size: 0.9rem;
+        text-align: center;
+        line-height: 1.4;
+        padding: 0 10px;
+      }
+
+      .character .glow {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+        background: radial-gradient(
+          circle at 50% 50%,
+          rgba(240, 195, 233, 0.6),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+
+      .character:hover .glow {
+        opacity: 1;
+      }
+
+      /* Features section */
+      .features {
+        background-color: var(--light-color);
+        padding: 80px 20px;
+        border-radius: 50px 50px 0 0;
+        position: relative;
+        margin-top: 50px;
+      }
+
+      .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-header h2 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+      }
+
+      .section-header p {
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .feature-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .feature-card {
+        background-color: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background-color: var(--secondary-color);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        font-size: 30px;
+      }
+
+      .feature-card h3 {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+      }
+
+      .feature-card p {
+        color: var(--dark-color);
+        line-height: 1.6;
+      }
+
+      /* Chat demo section */
+      .chat-demo {
+        padding: 80px 20px;
+        background-color: white;
+      }
+
+      .chat-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .chat-window {
+        width: 100%;
+        max-width: 600px;
+        height: 400px;
+        background-color: var(--light-color);
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        margin-top: 40px;
+      }
+
+      .chat-header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .chat-header img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+      }
+
+      .chat-header h3 {
+        font-size: 1.2rem;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .message {
+        max-width: 70%;
+        padding: 12px 15px;
+        border-radius: 15px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        position: relative;
+      }
+
+      .bot-message {
+        background-color: #e9dfff;
+        color: var(--dark-color);
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+      }
+
+      .user-message {
+        background-color: var(--primary-color);
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+      }
+
+      .thinking {
+        display: flex;
+        gap: 3px;
+        padding: 10px;
+        align-self: flex-start;
+      }
+
+      .thinking span {
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary-color);
+        border-radius: 50%;
+        animation: thinking 1.4s infinite ease-in-out both;
+      }
+
+      .thinking span:nth-child(1) {
+        animation-delay: -0.32s;
+      }
+      .thinking span:nth-child(2) {
+        animation-delay: -0.16s;
+      }
+
+      @keyframes thinking {
+        0%,
+        80%,
+        100% {
+          transform: scale(0);
+        }
+        40% {
+          transform: scale(1);
+        }
+      }
+
+      .chat-input {
+        padding: 15px;
+        display: flex;
+        gap: 10px;
+        background-color: white;
+        border-top: 1px solid #eee;
+      }
+
+      .chat-input input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        font-size: 0.95rem;
+        outline: none;
+      }
+
+      .chat-input button {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .chat-input button:hover {
+        background-color: #ff8a50;
+      }
+
+      /* Testimonials section */
+      .testimonials {
+        padding: 80px 20px;
+        background-color: var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .testimonials-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .testimonial-cards {
+        display: flex;
+        gap: 30px;
+        overflow-x: auto;
+        padding: 20px 0;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .testimonial-cards::-webkit-scrollbar {
+        display: none;
+      }
+
+      .testimonial-card {
+        min-width: 350px;
+        background-color: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .testimonial-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .testimonial-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .testimonial-name {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+      }
+
+      .testimonial-role {
+        color: var(--dark-color);
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+
+      .testimonial-text {
+        color: var(--dark-color);
+        line-height: 1.6;
+        font-style: italic;
+        position: relative;
+      }
+
+      .testimonial-text:before,
+      .testimonial-text:after {
+        content: '"';
+        font-size: 2rem;
+        color: var(--primary-color);
+        opacity: 0.3;
+        position: absolute;
+      }
+
+      .testimonial-text:before {
+        top: -10px;
+        left: -10px;
+      }
+
+      .testimonial-text:after {
+        bottom: -30px;
+        right: -10px;
+      }
+
+      /* Parent section */
+      .parent-section {
+        padding: 80px 20px;
+        background-color: white;
+      }
+
+      .parent-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 50px;
+        flex-wrap: wrap;
+      }
+
+      .parent-image {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .parent-image img {
+        width: 100%;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .parent-content {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .parent-content h2 {
+        font-size: 2.2rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      .parent-content p {
+        color: var(--dark-color);
+        line-height: 1.7;
+        margin-bottom: 30px;
+      }
+
+      .parent-features {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .feature-item i {
+        color: var(--accent-color);
+        font-size: 1.2rem;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
+
+      .modal {
+        background-color: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 500px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        transform: translateY(20px);
+        transition: transform 0.3s;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .modal-title {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--dark-color);
+        cursor: pointer;
+      }
+
+      .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .form-group label {
+        font-size: 0.95rem;
+        color: var(--dark-color);
+        font-weight: 500;
+      }
+
+      .form-group input {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus {
+        border-color: var(--primary-color);
+      }
+
+      .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .submit-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+      }
+
+      .submit-btn:hover {
+        background-color: #6a4f94;
+      }
+
+      .or-divider {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .or-divider hr {
+        flex: 1;
+        border: none;
+        height: 1px;
+        background-color: #ddd;
+      }
+
+      .or-divider span {
+        color: var(--dark-color);
+        opacity: 0.7;
+        font-size: 0.9rem;
+      }
+
+      .social-login {
+        display: flex;
+        gap: 15px;
+      }
+
+      .social-btn {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      .social-btn:hover {
+        background-color: #f8f8f8;
+        transform: translateY(-2px);
+      }
+
+      .google-btn i {
+        color: #db4437;
+      }
+
+      .facebook-btn i {
+        color: #4267b2;
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 60px 20px 30px;
+      }
+
+      .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+      }
+
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .footer-logo img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+
+      .footer-logo-text {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      .footer-about p {
+        line-height: 1.6;
+        opacity: 0.8;
+        margin-bottom: 20px;
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 15px;
+      }
+
+      .social-icons a {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+
+      .social-icons a:hover {
+        background-color: var(--accent-color);
+        transform: translateY(-3px);
+      }
+
+      .footer-links h3,
+      .footer-contact h3,
+      .footer-newsletter h3 {
+        color: white;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+      }
+
+      .footer-links ul {
+        list-style: none;
+      }
+
+      .footer-links li {
+        margin-bottom: 12px;
+      }
+
+      .footer-links a {
+        color: white;
+        opacity: 0.8;
+        text-decoration: none;
+        transition: opacity 0.3s;
+      }
+
+      .footer-links a:hover {
+        opacity: 1;
+      }
+
+      .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .contact-item {
+        display: flex;
+        gap: 10px;
+        opacity: 0.8;
+      }
+
+      .newsletter-form {
+        display: flex;
+        margin-top: 15px;
+      }
+
+      .newsletter-form input {
+        flex: 1;
+        padding: 12px 15px;
+        border: none;
+        border-radius: 5px 0 0 5px;
+        outline: none;
+      }
+
+      .newsletter-form button {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 0 15px;
+        border-radius: 0 5px 5px 0;
+        cursor: pointer;
+      }
+
+      .copyright {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        opacity: 0.7;
+        font-size: 0.9rem;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Responsive styles */
+      @media (max-width: 992px) {
+        .hero h1 {
+          font-size: 2.8rem;
+        }
+
+        .chat-window {
+          width: 90%;
+        }
+
+        .parent-container {
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links,
+        .login-btn {
+          display: none;
+        }
+        .mobile-menu {
+          display: block;
+        }
+
+        .hero h1 {
+          font-size: 2.2rem;
+        }
+
+        .hero p {
+          font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .cta-btn {
+          width: 100%;
+          text-align: center;
+        }
+
+        .feature-cards {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .show-modal {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .show-modal .modal {
+        transform: translateY(0);
+      }
+
+      /* For demo stars */
+      .stars {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background elements -->
+    <div class="bg-elements">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+      <div class="stars" id="stars"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+      <nav>
+        <a href="#" class="logo">
+          <img src="/api/placeholder/50/50" alt="StoryPals Logo" />
+          <span class="logo-text">StoryPals</span>
+        </a>
+
+        <div class="nav-links">
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Characters</a>
+          <a href="#">Features</a>
+          <a href="#">For Parents</a>
+          <a href="#">Contact</a>
+        </div>
+
+        <button class="login-btn" id="login-button">Parent Login</button>
+        <div class="mobile-menu">
+          <i class="fas fa-bars"></i>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Hero section -->
+    <section class="hero">
+      <h1>Magical Friends for Young Storytellers</h1>
+      <p>
+        StoryPals brings storytelling to life with interactive AI companions who
+        listen, respond, and create magical adventures alongside your child.
+        Safe, educational, and endlessly imaginative!
+      </p>
+
+      <div class="cta-buttons">
+        <a href="#try-now" class="cta-btn primary-btn">Start Your Adventure</a>
+        <a href="#learn-more" class="cta-btn secondary-btn">Learn More</a>
+      </div>
+    </section>
+
+    <!-- Character section -->
+    <section class="characters">
+      <div class="character">
+        <div class="glow"></div>
+        <img src="character photos/Luna.png" alt="Luna character" />
+        <h3>Luna</h3>
+        <p>The friendly star fairy who knows all about space and dreams</p>
+      </div>
+
+      <div class="character">
+        <div class="glow"></div>
+        <img src="character photos/Gogo.png" alt="Gogo character" />
+        <h3>Gogo</h3>
+        <p>A brave explorer with tales of adventure from distant lands</p>
+      </div>
+
+      <div class="character">
+        <div class="glow"></div>
+        <img src="character photos/Dodo.png" alt="Dodo character" />
+        <h3>Dodo</h3>
+        <p>The curious friend who loves solving mysteries and riddles</p>
+      </div>
+
+      <div class="character">
+        <div class="glow"></div>
+        <img src="character photos/Luna right profile.png" alt="Luna Profile character" />
+        <h3>Luna</h3>
+        <p>A magical fairy who teaches through stories and dreams</p>
+      </div>
+    </section>
+
+    <!-- Features section -->
+    <section class="features" id="learn-more">
+      <div class="features-container">
+        <div class="section-header">
+          <h2>Magical Features for Young Minds</h2>
+          <p>
+            StoryPals combines cutting-edge AI with child development expertise
+            to create safe, engaging, and educational experiences.
+          </p>
+        </div>
+
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <h3>Interactive Storytelling</h3>
+            <p>
+              Children can co-create stories with their StoryPal, developing
+              creativity and narrative skills while having fun. Each story can
+              be saved and revisited!
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Child-Safe Environment</h3>
+            <p>
+              StoryPals is designed with safety first. All content is
+              age-appropriate and interactions are monitored with advanced
+              safety protocols.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h3>Educational Content</h3>
+            <p>
+              Each character specializes in different educational areas, from
+              science and nature to language arts, making learning an adventure!
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <h3>Creative Companion</h3>
+            <p>
+              StoryPals respond to children's ideas, ask thoughtful questions,
+              and encourage imagination in a supportive, engaging way.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-star"></i>
+            </div>
+            <h3>Personalized Experience</h3>
+            <p>
+              StoryPals remember preferences, past stories, and adapt to each
+              child's interests and learning pace.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h3>Emotional Intelligence</h3>
+            <p>
+              StoryPals help children explore emotions through stories, building
+              empathy and emotional vocabulary.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat demo section -->
+    <section class="chat-demo" id="try-now">
+      <div class="chat-container">
+        <div class="section-header">
+          <h2>Meet Your StoryPal</h2>
+          <p>
+            Try a conversation with one of our magical friends and see the
+            StoryPals experience!
+          </p>
+        </div>
+
+        <div class="chat-window">
+          <div class="chat-header">
+            <img src="/api/placeholder/40/40" alt="Luna" />
+            <h3>Luna the Star Fairy</h3>
+          </div>
+
+          <div class="chat-messages">
+            <div class="message bot-message">
+              Hello there, young storyteller! I'm Luna, the Star Fairy. What
+              magical adventure shall we create today?
+            </div>
+
+            <div class="message user-message">
+              Can we go on a trip to the moon?
+            </div>
+
+            <div class="message bot-message">
+              What a wonderful idea! I know all about the moon! Did you know
+              that the moon is Earth's only natural satellite? Let's pack our
+              special space backpacks. What should we bring on our moon
+              adventure?
+            </div>
+
+            <div class="message user-message">
+              A telescope and some moon cookies!
+            </div>
+
+            <div class="message bot-message">
+              Perfect choices! A telescope to see the stars up close and moon
+              cookies for energy. As we climb into our sparkly silver rocket
+              ship, we can hear the countdown. 5...4...3...2...1... BLAST OFF!
+              The rocket zooms up into the sky, pushing us back into our seats.
+              What do you see out the window?
+            </div>
+
+            <div class="thinking">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <div class="chat-input">
+            <input type="text" placeholder="Type your message..." />
+            <button><i class="fas fa-paper-plane"></i>Plane</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials section -->
+    <section class="testimonials">
+      <div class="testimonials-container">
+        <div class="section-header">
+          <h2>What Families Are Saying</h2>
+          <p>
+            Join thousands of happy families who've discovered the magic of
+            StoryPals
+          </p>
+        </div>
+
+        <div class="testimonial-cards">
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <img
+                src="/api/placeholder/60/60"
+                alt="Sarah M."
+                class="testimonial-avatar"
+              />
+              <div>
+                <div class="testimonial-name">Sarah M.</div>
+                <div class="testimonial-role">Parent of Alex, 6</div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              StoryPals has completely transformed our bedtime routine. My son
+              Alex used to resist going to bed, but now he can't wait to
+              continue his adventure with Captain Leo. He's also learning so
+              much about geography and history!
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <img
+                src="/api/placeholder/60/60"
+                alt="David T."
+                class="testimonial-avatar"
+              />
+              <div>
+                <div class="testimonial-name">David T.</div>
+                <div class="testimonial-role">Father of Lily, 7</div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              As a busy parent, I was looking for something both entertaining
+              and educational. StoryPals exceeded my expectations. My daughter's
+              vocabulary has expanded dramatically, and I love how the parent
+              dashboard keeps me updated on her progress.
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <img
+                src="/api/placeholder/60/60"
+                alt="Maya J."
+                class="testimonial-avatar"
+              />
+              <div>
+                <div class="testimonial-name">Maya J.</div>
+                <div class="testimonial-role">Mother of Twins, 5</div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              My twins have very different interests, but StoryPals adapts to
+              both of them perfectly. Emma loves space adventures with Luna
+              while Noah enjoys solving mysteries with Whiskers. The
+              personalization is impressive!
+            </div>
+          </div>
+
+          <div class="testimonial-card">
+            <div class="testimonial-header">
+              <img
+                src="/api/placeholder/60/60"
+                alt="Karen L."
+                class="testimonial-avatar"
+              />
+              <div>
+                <div class="testimonial-name">Karen L.</div>
+                <div class="testimonial-role">Elementary Teacher</div>
+              </div>
+            </div>
+            <div class="testimonial-text">
+              I've recommended StoryPals to many families in my classroom. The
+              way it encourages creative thinking while incorporating
+              educational elements is brilliant. It's especially helpful for
+              children developing reading and writing skills.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Parent section -->
+    <section class="parent-section">
+      <div class="parent-container">
+        <div class="parent-image">
+          <img src="/api/placeholder/600/400" alt="Parent dashboard" />
+        </div>
+
+        <div class="parent-content">
+          <h2>For Parents: Safety & Learning</h2>
+          <p>
+            StoryPals was designed with parents in mind. Our comprehensive
+            parent dashboard gives you complete oversight and control of your
+            child's experience while providing insights into their learning
+            journey.
+          </p>
+
+          <div class="parent-features">
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Content control and activity monitoring</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Learning progress reports and insights</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Time limits and usage schedules</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Save and share your child's stories</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-check-circle"></i>
+              <span>Educational focus customization</span>
+            </div>
+          </div>
+
+          <button class="cta-btn primary-btn">Parent Dashboard</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-about">
+          <div class="footer-logo">
+            <img src="/api/placeholder/40/40" alt="StoryPals Logo" />
+            <span class="footer-logo-text">StoryPals</span>
+          </div>
+          <p>
+            StoryPals brings magical AI companions to children, creating a safe
+            space for creativity, learning, and fun through interactive
+            storytelling.
+          </p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Characters</a></li>
+            <li><a href="#">For Parents</a></li>
+            <li><a href="#">Safety & Privacy</a></li>
+            <li><a href="#">Subscription Plans</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact Us</h3>
+          <div class="contact-info">
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <span>hello@storypals.com</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <span>+1 (555) 123-4567</span>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>123 Imagination Lane, Storyville, ST 12345</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-newsletter">
+          <h3>Stay Updated</h3>
+          <p>
+            Subscribe to our newsletter for the latest StoryPals news and
+            features.
+          </p>
+          <div class="newsletter-form">
+            <input type="email" placeholder="Your email address" />
+            <button>Arrow<i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <p>
+          &copy; 2025 StoryPals. All rights reserved. | Privacy Policy | Terms
+          of Service
+        </p>
+      </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="login-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Parent Login</h2>
+          <button class="close-modal" id="close-modal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form class="login-form">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required />
+          </div>
+
+          <div class="remember-me">
+            <input type="checkbox" id="remember" />
+            <label for="remember">Remember me</label>
+          </div>
+
+          <button type="submit" class="submit-btn">Log In</button>
+
+          <div class="or-divider">
+            <hr />
+            <span>OR</span>
+            <hr />
+          </div>
+
+          <div class="social-login">
+            <button type="button" class="social-btn google-btn">
+              <i class="fab fa-google"></i>
+              <span>Google</span>
+            </button>
+
+            <button type="button" class="social-btn facebook-btn">
+              <i class="fab fa-facebook-f"></i>
+              <span>Facebook</span>
+            </button>
+          </div>
+
+          <p style="text-align: center; margin-top: 20px; font-size: 0.9rem">
+            Don't have an account?
+            <a href="#" style="color: var(--primary-color); font-weight: 600"
+              >Sign Up</a
+            >
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Generate random stars
+      document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.getElementById("stars");
+        const starsCount = 100;
+
+        for (let i = 0; i < starsCount; i++) {
+          const star = document.createElement("div");
+          star.className = "star";
+          star.style.top = `${Math.random() * 100}%`;
+          star.style.left = `${Math.random() * 100}%`;
+          star.style.animationDelay = `${Math.random() * 4}s`;
+          stars.appendChild(star);
+        }
+
+        // Modal functionality
+        const loginButton = document.getElementById("login-button");
+        const loginModal = document.getElementById("login-modal");
+        const closeModal = document.getElementById("close-modal");
+
+        loginButton.addEventListener("click", function () {
+          loginModal.classList.add("show-modal");
+        });
+
+        closeModal.addEventListener("click", function () {
+          loginModal.classList.remove("show-modal");
+        });
+
+        // Close modal when clicking outside
+        loginModal.addEventListener("click", function (e) {
+          if (e.target === loginModal) {
+            loginModal.classList.remove("show-modal");
+          }
+        });
+
+        // Simulate chat interaction
+        const chatInput = document.querySelector(".chat-input input");
+        const sendButton = document.querySelector(".chat-input button");
+        const chatMessages = document.querySelector(".chat-messages");
+        const thinking = document.querySelector(".thinking");
+
+        sendButton.addEventListener("click", sendMessage);
+        chatInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") sendMessage();
+        });
+
+        function sendMessage() {
+          if (chatInput.value.trim() === "") return;
+
+          // Add user message
+          const userMessage = document.createElement("div");
+          userMessage.className = "message user-message";
+          userMessage.textContent = chatInput.value;
+          chatMessages.appendChild(userMessage);
+
+          // Clear input
+          chatInput.value = "";
+
+          // Show thinking indicator
+          thinking.style.display = "flex";
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+
+          // Simulate response after delay
+          setTimeout(function () {
+            // Hide thinking indicator
+            thinking.style.display = "none";
+
+            // Add bot message
+            const botMessage = document.createElement("div");
+            botMessage.className = "message bot-message";
+            botMessage.textContent =
+              "That's amazing! I can see Earth getting smaller and smaller below us. The stars are so bright up here without Earth's atmosphere in the way. Look! There's the moon getting closer. Its craters and mountains are becoming visible. Ready to land our rocket in the Sea of Tranquility?";
+            chatMessages.appendChild(botMessage);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }, 2000);
+        }
+
+        // Character cards animation
+        const characters = document.querySelectorAll(".character");
+        characters.forEach((character) => {
+          character.addEventListener("click", function () {
+            this.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+              this.style.transform = "";
+            }, 300);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

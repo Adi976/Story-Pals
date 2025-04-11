@@ -3,212 +3,494 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with StoryPals</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>StoryPals - Chat</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            background: #343541;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            height: 100vh;
+        :root {
+            --primary-color: #7b5ea7;
+            --secondary-color: #f0c3e9;
+            --accent-color: #ff9e6d;
+            --light-color: #f9f5ff;
+            --dark-color: #483c67;
+            --cloud-color: #ffffff;
+            --star-color: #ffe66d;
+        }
+
+        * {
             margin: 0;
-            display: flex;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .chat-container {
-            display: flex;
-            width: 100%;
-            height: 100vh;
+
+        body,
+        html {
+            height: 100%;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(to bottom, #b5a8e0, #d5a8f0);
+            color: var(--dark-color);
         }
-        .sidebar {
-            width: 260px;
-            background: #202123;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
+
+        /* Navigation */
+        .nav-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
         }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        .chat-header {
-            padding: 20px;
-            border-bottom: 1px solid #4d4d4f;
+
+        nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
         }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .logout-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(123, 94, 167, 0.3);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(123, 94, 167, 0.4);
+        }
+
+        /* Chat container */
+        .chat-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Character selection */
+        .character-selection {
+            flex: 1;
+            max-width: 300px;
+            background-color: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .character-selection h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .character-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .character-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .character-option:hover {
+            background-color: var(--light-color);
+            transform: translateX(5px);
+        }
+
+        .character-option.active {
+            background-color: var(--secondary-color);
+        }
+
+        .character-option img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--secondary-color);
+        }
+
+        .character-option h3 {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        /* Chat window */
+        .chat-window {
+            flex: 2;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+        }
+
+        .chat-header h2 {
+            font-size: 1.3rem;
+        }
+
         .chat-messages {
             flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            padding: 20px;
-        }
-        .message {
-            margin-bottom: 20px;
             display: flex;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 15px;
         }
-        .message.user {
-            background: #343541;
+
+        .message {
+            max-width: 70%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+            position: relative;
         }
-        .message.bot {
-            background: #444654;
+
+        .bot-message {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
         }
-        .message-content {
-            padding: 15px;
-            border-radius: 8px;
-            max-width: 80%;
-        }
-        .input-container {
-            padding: 20px;
-            border-top: 1px solid #4d4d4f;
-            background: #343541;
-        }
-        .message-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #565869;
-            border-radius: 5px;
-            background: #40414f;
-            color: #fff;
-            font-size: 16px;
-        }
-        .message-input:focus {
-            outline: none;
-            border-color: #8e8ea0;
-        }
-        .send-button {
-            background: #19c37d;
+
+        .user-message {
+            background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
         }
-        .send-button:hover {
-            background: #15a66c;
-        }
-        .new-chat-btn {
-            background: #19c37d;
-            color: white;
-            border: none;
+
+        .thinking {
+            display: flex;
+            gap: 3px;
             padding: 10px;
-            border-radius: 5px;
+            align-self: flex-start;
+        }
+
+        .thinking span {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            animation: thinking 1.4s infinite ease-in-out both;
+        }
+
+        .thinking span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        .thinking span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes thinking {
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .chat-input {
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            background-color: white;
+            border-top: 1px solid #eee;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            margin-bottom: 20px;
+            transition: background-color 0.3s, transform 0.3s;
         }
-        .new-chat-btn:hover {
-            background: #15a66c;
+
+        .chat-input button:hover {
+            background-color: #ff8a50;
+            transform: translateY(-2px);
         }
-        .session-timer {
-            color: #8e8ea0;
-            font-size: 14px;
-            margin-top: 10px;
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .chat-container {
+                flex-direction: column;
+            }
+
+            .character-selection {
+                max-width: 100%;
+            }
+
+            .chat-window {
+                height: 70vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .chat-messages {
+                padding: 15px;
+            }
+
+            .message {
+                max-width: 85%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="sidebar">
-            <button class="new-chat-btn" onclick="startNewChat()">New Chat</button>
-            <div class="session-timer" id="sessionTimer">Session Time: 00:00</div>
-        </div>
-        <div class="main-content">
-            <div class="chat-header">
-                <h2>Chat with {{ child.name }}</h2>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <nav>
+            <a href="/" class="logo">
+                <img src="/api/placeholder/50/50" alt="StoryPals Logo" />
+                <span class="logo-text">StoryPals</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/child-details">Child Details</a>
+                <a href="/chat">Chat</a>
             </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="message bot">
-                    <div class="message-content">
-                        Hello! I'm StoryPals, your friendly AI storyteller! What kind of story would you like to hear today? 😊
-                    </div>
+
+            <button class="logout-btn" onclick="window.location.href='/logout'">
+                Logout
+            </button>
+        </nav>
+    </div>
+
+    <!-- Chat container -->
+    <div class="chat-container">
+        <!-- Character selection -->
+        <div class="character-selection">
+            <h2>Choose Your StoryPal</h2>
+            <div class="character-list">
+                <div class="character-option active">
+                    <img src="character photos/Luna.png" alt="Luna" />
+                    <h3>Luna</h3>
+                </div>
+                <div class="character-option">
+                    <img src="character photos/Gogo.png" alt="Gogo" />
+                    <h3>Gogo</h3>
+                </div>
+                <div class="character-option">
+                    <img src="character photos/Dodo.png" alt="Dodo" />
+                    <h3>Dodo</h3>
                 </div>
             </div>
-            <div class="input-container">
-                <form id="messageForm" onsubmit="sendMessage(event)">
-                    <div>
-                        <input type="text" class="message-input" id="messageInput" placeholder="Type your message..." required>
-                        <button type="submit" class="send-button">Send</button>
-                    </div>
-                </form>
+        </div>
+
+        <!-- Chat window -->
+        <div class="chat-window">
+            <div class="chat-header">
+                <img src="character photos/Luna.png" alt="Luna" />
+                <h2>Luna the Star Fairy</h2>
+            </div>
+
+            <div class="chat-messages">
+                <div class="message bot-message">
+                    Hello there, young storyteller! I'm Luna, the Star Fairy. What
+                    magical adventure shall we create today?
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" placeholder="Type your message..." />
+                <button title="Send"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 
     <script>
-        let sessionStartTime = new Date();
-        let sessionTimerInterval;
+        // Character selection
+        const characterOptions = document.querySelectorAll(".character-option");
+        const chatHeader = document.querySelector(".chat-header");
+        const chatHeaderImg = chatHeader.querySelector("img");
+        const chatHeaderTitle = chatHeader.querySelector("h2");
 
-        function updateSessionTimer() {
-            const now = new Date();
-            const diff = Math.floor((now - sessionStartTime) / 1000);
-            const minutes = Math.floor(diff / 60);
-            const seconds = diff % 60;
-            document.getElementById('sessionTimer').textContent = 
-                `Session Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        characterOptions.forEach((option) => {
+            option.addEventListener("click", function () {
+                // Remove active class from all options
+                characterOptions.forEach((opt) => opt.classList.remove("active"));
+                // Add active class to clicked option
+                this.classList.add("active");
+
+                // Update chat header
+                const characterName = this.querySelector("h3").textContent;
+                const characterImg = this.querySelector("img").src;
+                chatHeaderImg.src = characterImg;
+                chatHeaderTitle.textContent = `${characterName} the ${
+                    characterName === "Luna"
+                        ? "Star Fairy"
+                        : characterName === "Gogo"
+                        ? "Explorer"
+                        : "Detective"
+                }`;
+            });
+        });
+
+        // Chat functionality
+        const chatInput = document.querySelector(".chat-input input");
+        const sendButton = document.querySelector(".chat-input button");
+        const chatMessages = document.querySelector(".chat-messages");
+        const thinking = document.createElement("div");
+        thinking.className = "thinking";
+        thinking.innerHTML = "<span></span><span></span><span></span>";
+
+        sendButton.addEventListener("click", sendMessage);
+        chatInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") sendMessage();
+        });
+
+        function sendMessage() {
+            if (chatInput.value.trim() === "") return;
+
+            // Add user message
+            const userMessage = document.createElement("div");
+            userMessage.className = "message user-message";
+            userMessage.textContent = chatInput.value;
+            chatMessages.appendChild(userMessage);
+
+            // Clear input
+            chatInput.value = "";
+
+            // Show thinking indicator
+            chatMessages.appendChild(thinking);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Simulate response after delay
+            setTimeout(function () {
+                // Hide thinking indicator
+                thinking.remove();
+
+                // Add bot message
+                const botMessage = document.createElement("div");
+                botMessage.className = "message bot-message";
+                botMessage.textContent =
+                    "That's a wonderful idea! Let's create a magical story together. What happens next?";
+                chatMessages.appendChild(botMessage);
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 2000);
         }
-
-        function startNewChat() {
-            document.getElementById('chatMessages').innerHTML = `
-                <div class="message bot">
-                    <div class="message-content">
-                        Hello! I'm StoryPals, your friendly AI storyteller! What kind of story would you like to hear today? 😊
-                    </div>
-                </div>
-            `;
-            sessionStartTime = new Date();
-            updateSessionTimer();
-        }
-
-        function addMessage(content, isUser = false) {
-            const messagesDiv = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            messageDiv.innerHTML = `
-                <div class="message-content">
-                    ${content}
-                </div>
-            `;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        async function sendMessage(event) {
-            event.preventDefault();
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            addMessage(message, true);
-            messageInput.value = '';
-
-            try {
-                const response = await fetch(`/api/chat/{{ child.id }}/message`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    addMessage(data.message);
-                } else {
-                    const data = await response.json();
-                    addMessage('Sorry, I encountered an error. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                addMessage('Sorry, I encountered an error. Please try again.');
-            }
-        }
-
-        // Start the session timer
-        sessionTimerInterval = setInterval(updateSessionTimer, 1000);
-        updateSessionTimer();
     </script>
 </body>
 </html> 
